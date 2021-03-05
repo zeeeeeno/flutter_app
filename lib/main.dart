@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 /// main() 메서드는 화살표(=>) 표기법을 사용합니다. 한 줄 함수 또는 메서드에 화살표 표기법을 사용하세요.
 void main() => runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(          // Add the 3 lines from here...
         primaryColor: Colors.white,
       ),
-      home: RandomWords(),
+      home: MyHomePage(),
         // appBar: AppBar(
         //   title: Text('Welcome 2 Flutter'),
         // ),
@@ -26,6 +27,27 @@ class MyApp extends StatelessWidget {
           // child: RandomWords(),
         // ),
       // ),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: WebView(
+          initialUrl: 'http://192.168.137.1:8082/address/search',
+          javascriptMode: JavascriptMode.unrestricted,
+        ),
+      ),
     );
   }
 }
