@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: SafeArea(
         child: WebView(
+          key: UniqueKey(),
           initialUrl: 'http://192.168.137.1:8082/address/search',
           javascriptMode: JavascriptMode.unrestricted,
         ),
