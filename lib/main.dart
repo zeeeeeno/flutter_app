@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 /// main() 메서드는 화살표(=>) 표기법을 사용합니다. 한 줄 함수 또는 메서드에 화살표 표기법을 사용하세요.
 void main() => runApp(MyApp());
@@ -43,10 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: WebView(
-          key: UniqueKey(),
-          initialUrl: 'http://192.168.137.1:8082/address/search',
-          javascriptMode: JavascriptMode.unrestricted,
+        child: InAppWebView(
+          initialUrl: 'http://192.168.137.1:8082/address/manage',
+          // javascriptMode: JavascriptMode.unrestricted,
         ),
       ),
     );
