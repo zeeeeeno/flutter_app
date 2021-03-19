@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 /// main() 메서드는 화살표(=>) 표기법을 사용합니다. 한 줄 함수 또는 메서드에 화살표 표기법을 사용하세요.
 void main() => runApp(MyApp());
@@ -15,18 +17,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Startup Name Generator',
-      theme: ThemeData(          // Add the 3 lines from here...
+      theme: ThemeData( // Add the 3 lines from here...
         primaryColor: Colors.white,
       ),
       home: MyHomePage(),
-        // appBar: AppBar(
-        //   title: Text('Welcome 2 Flutter'),
-        // ),
-        // body: Center(
-          // child: Text('Hello World'),
-          // child: Text(wordPair.asPascalCase),
-          // child: RandomWords(),
-        // ),
+      // appBar: AppBar(
+      //   title: Text('Welcome 2 Flutter'),
+      // ),
+      // body: Center(
+      // child: Text('Hello World'),
+      // child: Text(wordPair.asPascalCase),
+      // child: RandomWords(),
+      // ),
       // ),
     );
   }
@@ -45,11 +47,37 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: SafeArea(
         child: InAppWebView(
-          initialUrl: 'http://192.168.137.1:8082/address/manage',
-          // javascriptMode: JavascriptMode.unrestricted,
+          initialUrl: 'http://192.168.137.1:8082/address/setting',
+          initialHeaders: {},
+          onWebViewCreated: (InAppWebViewController controller) {
+            controller.addJavaScriptHandler(
+                handlerName: "print", callback: (args) {
+              print("From the Javascript side:");
+              return getCurrentUserLocation();
+            });
+          },
+          onLoadStart: (InAppWebViewController controller, String url) {
+
+          },
+          onLoadStop: (InAppWebViewController controller, String url) {
+
+          },
+          onConsoleMessage: (InAppWebViewController controller,
+              ConsoleMessage consoleMessage) {
+            log("Console: ${consoleMessage.message}");
+            // Fluttertoast.showToast(msg: message);
+          },
         ),
       ),
     );
+  }
+
+  Future<Position> getCurrentUserLocation() async {
+    return Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((location) {
+      return location;
+    });
   }
 }
 
@@ -76,11 +104,13 @@ class RandomWordsState extends State<RandomWords> {
   Widget _buildSuggestions() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
+
         /// itemBuilder 콜백은 단어 쌍이 제안될 때마다 호출되고 각각을 ListTile 행에 배치합니다.
         /// 짝수 행인 경우 ListTile 행에 단어 쌍을 추가합니다. 홀수 행인 경우 시각적으로 각 항목을 구분하는 Divider 위젯을 추가합니다.
         /// 작은 기기에서는 구분선을 보기 어려울 수 있습니다.(odd = 홀수, even = 짝수)
         itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider(); /*2*/
+          if (i.isOdd) return Divider();
+          /*2*/
 
           /// i ~/ 2 표현식은 i를 2로 나눈 뒤 정수 결과를 반환합니다.
           /// 예를 들어: 1, 2, 3, 4, 5는 0, 1, 1, 2, 2가 됩니다. 이렇게 하면 구분선 위젯을 제외한 ListView에 있는 단어 쌍 수가 계산됩니다.
@@ -96,7 +126,7 @@ class RandomWordsState extends State<RandomWords> {
   /// _buildSuggestions() 함수는 단어 쌍 마다 한 번 씩 _buildRow()를 호출합니다.
   /// 이 함수는 ListTile에서 각각 새로운 쌍을 표시하여 다음 단계에서 행을 더 매력적으로 만들 수 있게 합니다.
   Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);  // NEW
+    final alreadySaved = _saved.contains(pair); // NEW
 
     return ListTile(
       title: Text(
@@ -165,19 +195,19 @@ class RandomWordsState extends State<RandomWords> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getPosition();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getPosition();
+  // }
 
-  Future<void> getPosition() async {
-    var currentPosition = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
-    var lastPosition = await Geolocator()
-        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.low);
-    print(currentPosition);
-    print(lastPosition);
-  }
+  // Future<void> getPosition() async {
+  //   var currentPosition = await Geolocator()
+  //       .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+  //   var lastPosition = await Geolocator()
+  //       .getLastKnownPosition(desiredAccuracy: LocationAccuracy.low);
+  //   print(currentPosition);
+  //   print(lastPosition);
+  // }
 }
 
