@@ -50,22 +50,18 @@ class _MyHomePageState extends State<MyHomePage> {
           initialUrl: 'http://192.168.137.1:8082/address/setting',
           initialHeaders: {},
           onWebViewCreated: (InAppWebViewController controller) {
-            controller.addJavaScriptHandler(
-                handlerName: "print", callback: (args) {
+            controller.addJavaScriptHandler(handlerName: "Print", callback: (args) {
               print("From the Javascript side:");
+              print(args);
               return getCurrentUserLocation();
             });
           },
           onLoadStart: (InAppWebViewController controller, String url) {
-
           },
           onLoadStop: (InAppWebViewController controller, String url) {
-
           },
-          onConsoleMessage: (InAppWebViewController controller,
-              ConsoleMessage consoleMessage) {
+          onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
             log("Console: ${consoleMessage.message}");
-            // Fluttertoast.showToast(msg: message);
           },
         ),
       ),
@@ -73,11 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Position> getCurrentUserLocation() async {
-    return Geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((location) {
-      return location;
-    });
+    var currentPosition = await Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+
+    print(currentPosition);
+
+    return currentPosition;
   }
 }
 
